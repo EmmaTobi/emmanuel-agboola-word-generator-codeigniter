@@ -78,7 +78,7 @@ class RandomWordService
         if($length <= count($this->numberIds)){
             $result = array_rand(array_flip($this->numberIds), $length);
         }else{
-            $result = array_rand(array_flip($this->numberIds), $count($this->numberIds));
+            $result = array_rand(array_flip($this->numberIds), count($this->numberIds));
             $overflowResult = array_rand(array_flip($this->numberIds), $length - count($this->numberIds));
             $result =  array_merge($result, $overflowResult);
         }
@@ -133,9 +133,9 @@ class RandomWordService
      */
     protected function getCharactersFromDbById(array $ids): array
     {
-        $p = implode(',', $ids);
         $db = db_connect();
-        $sql = "SELECT symbol, id FROM characters where id in ($p)";
+        $values = implode("','", $ids);
+        $sql = "SELECT symbol, id FROM `characters` WHERE id IN ('". $values ."');";
         $result = $db->query($sql)->getResultArray();
         return array_column($result, 'symbol', 'id');
     }
